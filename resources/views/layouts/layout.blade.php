@@ -32,8 +32,7 @@
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
-<!--
-  <!-- Preloader 
+<!-- Preloader 
   <div class="preloader flex-column justify-content-center align-items-center">
     <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
   </div>
@@ -42,19 +41,23 @@
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
-    <!--
+    
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
+        <a href="{{ route('home') }}" class="nav-link">Accueil</a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
+      @if(Auth::user()->profil->roles->contains('code', 'GESTION_UTILISATEURS'))
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="{{ route('users.index') }}" class="nav-link">Utilisateurs</a>
+        </li>
+      @endif
+      @if(Auth::user()->profil->roles->contains('code', 'GESTION_PROFILS'))
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="{{ route('profils.index') }}" class="nav-link">Profils</a>
+        </li>
+      @endif
     </ul>
-    -->
+    
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -87,7 +90,7 @@
           <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{ Auth::user()->nom }} {{ Auth::user()->prenom }}</a>
         </div>
       </div>
 
@@ -96,32 +99,27 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-header">EXAMPLES</li>
+          <li class="nav-header">Référentiel</li>
+          @if(Auth::user()->profil->roles->contains('code', 'GESTION_UTILISATEURS'))
+            <li class="nav-item">
+              <a href="{{ route('users.index') }}" class="nav-link">
+                <i class="nav-icon far fa-calendar-alt"></i>
+                <p>
+                  Gestion des utilisateurs
+                </p>
+              </a>
+            </li>
+          @endif
+          @if(Auth::user()->profil->roles->contains('code', 'GESTION_PROFILS'))
           <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"></i>
-              <p>
-                Calendar
-                <span class="badge badge-info right">2</span>
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
+            <a href="{{ route('profils.index') }}" class="nav-link">
               <i class="nav-icon far fa-image"></i>
               <p>
-                Gallery
+              Gestion des profils
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-              <i class="nav-icon fas fa-columns"></i>
-              <p>
-                Kanban Board
-              </p>
-            </a>
-          </li>
+          @endif
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

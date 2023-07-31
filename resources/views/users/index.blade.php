@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-AGF - Gestion des profils
+AGF - Gestion des utilisateurs
 @endsection
 
 @section('links')
@@ -19,12 +19,12 @@ AGF - Gestion des profils
 <div class="container-fluid">
   <div class="row mb-2">
     <div class="col-sm-6">
-      <h4>Gestion des profils</h4>
+      <h4>Gestion des utilisateurs</h4>
     </div>
     <div class="col-sm-6">
       <ol class="breadcrumb float-sm-right">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-        <li class="breadcrumb-item active">Profils</li>
+        <li class="breadcrumb-item"><a href="{{ route('home') }}">Accueil</a></li>
+        <li class="breadcrumb-item active">Utilisateurs</li>
       </ol>
     </div>
   </div>
@@ -35,9 +35,9 @@ AGF - Gestion des profils
 
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title"><b> Liste des profils</b></h3>
+    <h3 class="card-title"><b> Liste des utilisateurs</b></h3>
     <div class="text-right">
-      <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#createModal"><i class="fa-solid fa-circle-plus"></i> Ajouter un profil</a>
+      <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#createModal"><i class="fa-solid fa-circle-plus"></i> Ajouter un utilisateur</a>
     </div>
   </div>
   <!-- /.card-header -->
@@ -45,36 +45,44 @@ AGF - Gestion des profils
     <table id="example1" class="table table-bordered table-striped">
       <thead>
         <tr>
-          <th>Code</th>
-          <th>Nom</th>
+          <th>Nom complet</th>
+          <th>E-mail</th>
           <th>Date de création</th>
-          <th>Roles</th>
+          <th>Date de modification</th>
+          <th>Profil</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        @foreach ($profils as $profil)
+        @foreach ($users as $user)
         <tr>
           <td>
-            {{ $profil->code }}
+            {{ strtoupper($user->nom) }} {{ ucfirst($user->prenom) }}
           </td>
           <td>
-            {{ $profil->nom }}
+            {{ $user->email }}
           </td>
           <td>
-            {{ $profil->created_at }}
+            {{ $user->created_at }}
           </td>
           <td>
-            <ul>
-              @foreach ($profil->roles as $role)
-              <li>{{ $role->nom }} ({{ $role->description }}) </li>
-              @endforeach
-            </ul>
+            @if($user->updated_at)
+            {{ $user->updated_at }}
+            @else
+            L'utilisateur n'a pas été modifié
+            @endif
+          </td>
+          <td>
+            @if ($user->profil)
+              {{ $user->profil->nom }} ({{ $user->profil->code }})
+            @else
+              Aucun profil associé à cet utilisateur.
+            @endif
           </td>
           <td class="project-actions text-left">
-            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#viewModal{{ $profil->id }}"><i class="fas fa-folder"></i> Voir</a>
-            <a class="btn btn-info btn-sm" href="#" data-toggle="modal" data-target="#editModal{{ $profil->id }}"><i class="fas fa-pencil-alt"></i> Modifier</a>
-            <a class="btn btn-danger btn-sm" href="#" data-toggle="modal" data-target="#deleteModal{{ $profil->id }}"><i class="fa-solid fa-trash-can"></i> Supprimer</a>
+            <a class="btn btn-primary btn-sm" href="#" data-toggle="modal" data-target="#viewModal{{ $user->id }}"><i class="fas fa-folder"></i> Voir</a>
+            <a class="btn btn-info btn-sm" href="#" data-toggle="modal" data-target="#editModal{{ $user->id }}"><i class="fas fa-pencil-alt"></i> Modifier</a>
+            <a class="btn btn-danger btn-sm" href="#" data-toggle="modal" data-target="#deleteModal{{ $user->id }}"><i class="fa-solid fa-trash-can"></i> Supprimer</a>
           </td>
         </tr>
         @endforeach
@@ -86,16 +94,16 @@ AGF - Gestion des profils
 </div>
 
 <!-- Create Modal -->
-@include('profils.modals.create')
+@include('users.modals.create')
 
 <!-- View Modal  -->
-@include('profils.modals.show')
+@include('users.modals.show')
 
 <!-- Edit Modal  -->
-@include('profils.modals.edit')
+@include('users.modals.edit')
 
 <!-- Delete Modal  -->
-@include('profils.modals.delete')
+@include('users.modals.delete')
 
 @endsection
 
@@ -144,8 +152,8 @@ AGF - Gestion des profils
     $('#createModal').on('hidden.bs.modal', function() {
       $('#createForm')[0].reset();
     });
-    $('#createModal').on('hidden.bs.modal', function() {
-      $('#createForm')[0].reset();
+    $('#editModal').on('hidden.bs.modal', function() {
+      $('#editModal')[0].reset();
     });
   });
 </script>
@@ -169,6 +177,12 @@ AGF - Gestion des profils
 
 <!-- Les erreurs de validation -->
 @if ($errors->any())
+<script>
+    // Ouvrir le modal s'il y a des erreurs de validation
+    $(document).ready(function() {
+        $('#createModal').modal('show');
+    });
+</script>
 @foreach ($errors->all() as $error)
 <script>
   toastr.options = {

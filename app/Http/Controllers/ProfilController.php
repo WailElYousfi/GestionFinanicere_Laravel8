@@ -12,7 +12,7 @@ class ProfilController extends Controller
 
     public function __construct()
     {
-        $this->middleware('checkRole:GESTION_BUDGET');
+        $this->middleware('checkRole:GESTION_PROFILS');
     }
 
     /**
@@ -48,7 +48,7 @@ class ProfilController extends Controller
         // Mettre à jour la relation Many-to-Many (rôles associés) avec la méthode sync()
         $profil->roles()->sync($rolesIds);
 
-        return redirect()->route('profils.index')->with('success', 'Le profil a été créé avec succès !');
+        return redirect()->route('profils.index')->with('success', 'Profil ajouté avec succès !');
     }
 
     /**
@@ -71,7 +71,7 @@ class ProfilController extends Controller
         $rolesIds = $request->input('selectedRoles', []); // Récupérer les IDs des rôles soumis depuis le formulaire
         $profil->roles()->sync($rolesIds);
 
-        return redirect()->route('profils.index')->with('success', 'Le profil a été modifié avec succès !');
+        return redirect()->route('profils.index')->with('success', 'Profil modifié avec succès !');
     }
 
     /**
@@ -85,23 +85,18 @@ class ProfilController extends Controller
         // Vérifier s'il y a des utilisateurs liés à ce profil
         $usersCount = $profil->users()->count();
 
+        if ($usersCount > 0)
+            return redirect()->route('profils.index')->with('error', 'Impossible de supprimer le profil car des utilisateurs y sont liés.');
+
         // Vérifier s'il y a des rôles liés à ce profil
         $rolesCount = $profil->roles()->count();
-
-        if ($usersCount > 0 || $rolesCount > 0) {
-            $errors = [];
-
-            if ($usersCount > 0) 
-                $errors['users'] = 'Impossible de supprimer le profil car des utilisateurs y sont liés.';
-
-            if ($rolesCount > 0)
-                $errors['roles'] = 'Impossible de supprimer le profil car des rôles y sont liés.';
-
-            return redirect()->route('profils.index')->withErrors($errors);
+        if ($rolesCount > 0) {
+            // Détacher des rôles
+            $profil->roles()->detach();
         }
-        
+
         $profil->delete();
 
-        return redirect()->route('profils.index')->with('success', 'Le profil a été supprimé avec succès !');
+        return redirect()->route('profils.index')->with('success', 'Profil supprimé avec succès !');
     }
 }
