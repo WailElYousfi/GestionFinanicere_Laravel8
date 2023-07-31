@@ -6,11 +6,10 @@ use App\Models\Profil;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Http\Middleware\CheckRole;
 
 class ProfilController extends Controller
 {
-    
+
     public function __construct()
     {
         $this->middleware('checkRole:GESTION_BUDGET');
@@ -23,19 +22,9 @@ class ProfilController extends Controller
      */
     public function index()
     {
-        $profils = Profil::latest()->paginate(5);
-        return view('profils.index', compact('profils'))->with('i', (request()->input('page', 1) - 1) * 5);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
+        $profils = Profil::all();
         $allRoles = Role::all();
-        return view('profils.create', compact('allRoles'));
+        return view('profils.index', compact('profils', 'allRoles'));
     }
 
     /**
@@ -47,42 +36,19 @@ class ProfilController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => ['required', 'unique:profils'],
-            'nom' => 'required',
+            'code' => ['required', 'unique:profils', 'min:3'],
+            'nom' => ['required', 'min:3'],
         ]);
-  
+
         $profil = Profil::create($request->all());
-   
+
         // Récupérer les IDs des rôles sélectionnés depuis le formulaire
         $rolesIds = $request->input('selectedRoles', []);
 
         // Mettre à jour la relation Many-to-Many (rôles associés) avec la méthode sync()
         $profil->roles()->sync($rolesIds);
 
-        return redirect()->route('profils.index')->with('success','Profil created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Profil  $profil
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Profil $profil)
-    {
-        return view('profils.show', compact('profil'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Profil  $profil
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Profil $profil)
-    {
-        $allRoles = Role::all(); // Supposons que vous avez un modèle Role pour les rôles
-        return view('profils.edit',compact('profil', 'allRoles'));
+        return redirect()->route('profils.index')->with('success', 'Le profil a été créé avec succès !');
     }
 
     /**
@@ -95,17 +61,17 @@ class ProfilController extends Controller
     public function update(Request $request, Profil $profil)
     {
         $request->validate([
-            'code' => ['required', Rule::unique('profils')->ignore($profil->id)],
-            'nom' => 'required',
+            'code' => ['required', Rule::unique('profils')->ignore($profil->id), 'min:3'],
+            'nom' => ['required', 'min:3'],
         ]);
-  
+
         $profil->update($request->all());
 
         // Mettre à jour la relation Many-to-Many (rôles associés) avec la méthode sync()
         $rolesIds = $request->input('selectedRoles', []); // Récupérer les IDs des rôles soumis depuis le formulaire
         $profil->roles()->sync($rolesIds);
 
-        return redirect()->route('profils.index')->with('success','Profil updated successfully');
+        return redirect()->route('profils.index')->with('success', 'Le profil a été modifié avec succès !');
     }
 
     /**
@@ -116,8 +82,26 @@ class ProfilController extends Controller
      */
     public function destroy(Profil $profil)
     {
+        // Vérifier s'il y a des utilisateurs liés à ce profil
+        $usersCount = $profil->users()->count();
+
+        // Vérifier s'il y a des rôles liés à ce profil
+        $rolesCount = $profil->roles()->count();
+
+        if ($usersCount > 0 || $rolesCount > 0) {
+            $errors = [];
+
+            if ($usersCount > 0) 
+                $errors['users'] = 'Impossible de supprimer le profil car des utilisateurs y sont liés.';
+
+            if ($rolesCount > 0)
+                $errors['roles'] = 'Impossible de supprimer le profil car des rôles y sont liés.';
+
+            return redirect()->route('profils.index')->withErrors($errors);
+        }
+        
         $profil->delete();
-  
-        return redirect()->route('profils.index')->with('success','Profil deleted successfully');
+
+        return redirect()->route('profils.index')->with('success', 'Le profil a été supprimé avec succès !');
     }
 }

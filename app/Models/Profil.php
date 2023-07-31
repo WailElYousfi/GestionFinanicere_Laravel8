@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-//use App\Models\Role;
+use App\Models\User;
+use App\Models\Role;
 
 class Profil extends Model
 {
@@ -16,6 +17,11 @@ class Profil extends Model
 
     public function roles()
     {
-        return $this->belongsToMany('App\Models\Role');
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'profil_id');
     }
 }
