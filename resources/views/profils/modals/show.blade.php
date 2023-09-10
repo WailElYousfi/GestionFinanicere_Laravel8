@@ -23,21 +23,21 @@
 
         <strong><i class="fas fa-book mr-1"></i> Date de modification</strong>
         @if($profil->updated_at)
-          <p class="text-muted">{{ $profil->created_at }}</p>
+        <p class="text-muted">{{ $profil->created_at }}</p>
         @else
-          <p class="text-muted">Ce profil n'a pas été modifié</p>
+        <p class="text-muted">Ce profil n'a pas été modifié</p>
         @endif
         <hr>
 
         <strong><i class="fas fa-pencil-alt mr-1"></i> Les rôles affectés</strong>
-        @if ($profil->roles ?? null && $profil->roles->count() > 0)
+        @if ($profil->roles->isNotEmpty())
         <ul>
           @foreach ($profil->roles as $role)
-          <li class="tag tag-info">{{ $role->nom }} ({{ $role->code }})</li>
+          <li class="text-muted">{{ $role->nom }} ({{ $role->code }})</li>
           @endforeach
         </ul>
         @else
-        <span class="tag tag-info">Aucun role n'est affecté a ce profil!</span>
+        <p class="text-muted">Aucun profil n'est affecté a cet utilisateur!</p>
         @endif
       </div>
       <div class="modal-footer">

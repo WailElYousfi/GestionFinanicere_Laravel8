@@ -1,6 +1,6 @@
 @foreach($profils as $profil)
 <div class="modal fade" id="editModal{{ $profil->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header bg-primary">
         <h5 class="modal-title" id="editModalLabel">Modification du profil</h5>

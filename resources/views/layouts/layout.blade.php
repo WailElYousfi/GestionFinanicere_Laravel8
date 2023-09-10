@@ -77,7 +77,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{{ route('home') }}" class="brand-link">
       <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">AGF</span>
     </a>
@@ -90,9 +90,10 @@
           <img src="/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ Auth::user()->nom }} {{ Auth::user()->prenom }}</a>
+        <a href="#" class="d-block">{{ Auth::user()->nom }} {{ Auth::user()->prenom }}</a>
         </div>
       </div>
+
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -103,7 +104,7 @@
           @if(Auth::user()->profil->roles->contains('code', 'GESTION_UTILISATEURS'))
             <li class="nav-item">
               <a href="{{ route('users.index') }}" class="nav-link">
-                <i class="nav-icon far fa-calendar-alt"></i>
+                <i class="nav-icon fa-solid fa-users"></i>
                 <p>
                   Gestion des utilisateurs
                 </p>
@@ -113,7 +114,7 @@
           @if(Auth::user()->profil->roles->contains('code', 'GESTION_PROFILS'))
           <li class="nav-item">
             <a href="{{ route('profils.index') }}" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
+              <i class="nav-icon fa-solid fa-id-card"></i>
               <p>
               Gestion des profils
               </p>

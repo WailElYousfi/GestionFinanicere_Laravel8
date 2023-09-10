@@ -169,6 +169,12 @@ AGF - Gestion des profils
 
 <!-- Les erreurs de validation -->
 @if ($errors->any())
+<script>
+    // Ouvrir le modal s'il y a des erreurs de validation
+    $(document).ready(function() {
+        $('#createModal').modal('show');
+    });
+</script>
 @foreach ($errors->all() as $error)
 <script>
   toastr.options = {

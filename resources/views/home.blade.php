@@ -19,12 +19,12 @@ AGF - Accueil
         <div class="col-md-6">
             <a href="{{ route('users.index') }}" class="card-link text-center">
                 <div class="card mb-4 shadow clickable-card">
-                    <div class="card-body bg-primary">
-                        <i class="fas fa-user fa-7x mb-3 text-white"></i><br><br>
+                    <div class="card-body bg-dark">
+                        <i class="fa-solid fa-users fa-7x mb-3 text-white"></i><br><br>
                         <h3><b>Gestion des utilisateurs</b></h3>
                     </div>
                     <div class="card-footer ">
-                    <p class="card-text">Accédez à la page de gestion des utilisateurs pour ajouter, modifier ou supprimer des utilisateurs.</p>
+                    <p class="card-text text-dark">Accédez à la page de gestion des utilisateurs pour ajouter, modifier ou supprimer des utilisateurs.</p>
                     </div>
                 </div>
             </a>
@@ -35,12 +35,12 @@ AGF - Accueil
         <div class="col-md-6">
             <a href="{{ route('profils.index') }}" class="card-link text-center">
                 <div class="card mb-4 shadow clickable-card">
-                    <div class="card-body bg-primary">
-                        <i class="fas fa-users-cog fa-7x mb-3 text-white"></i><br><br>
+                    <div class="card-body bg-dark">
+                        <i class="fas fa-solid fa-id-card fa-7x mb-3 text-white"></i><br><br>
                         <h3><b>Gestion des profils</b></h3>
                     </div>
                     <div class="card-footer">
-                    <p class="card-text">Accédez à la page de gestion des utilisateurs pour ajouter, modifier ou supprimer des utilisateurs.</p>
+                    <p class="card-text text-dark">Accédez à la page de gestion des profils pour ajouter, modifier ou supprimer des profils.</p>
                     </div>
                 </div>
             </a>
